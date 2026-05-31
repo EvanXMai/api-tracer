@@ -1,0 +1,18 @@
+{
+  "name": "api-tracer-plugin",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ApiTracer 浏览器插件 (Chrome / Edge MV3)：在 DevTools 中以业务函数名维度查看接口请求。",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsup && node scripts/copy-static.mjs",
+    "dev": "tsup --watch --onSuccess \"node scripts/copy-static.mjs\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0"
+  }
+}

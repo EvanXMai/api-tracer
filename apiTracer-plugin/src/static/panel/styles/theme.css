@@ -1,0 +1,80 @@
+/* ---------- 主题变量 + 全局 reset ---------- */
+
+:root {
+  /* 暖色基底 */
+  --bg: #1a1412;
+  --bg-alt: #221a17;
+  --bg-row-hover: #2c211c;
+  --bg-row-selected: #4a2316;
+  --fg: #ede5df;
+  --fg-dim: #a89992;
+  --border: #3a2a23;
+  --border-strong: #5a3a2e;
+
+  /* 红橙主色 */
+  --primary: #ff6b35;
+  --primary-hover: #ff8559;
+  --primary-soft: #4a2418;
+  --primary-dim: #d4501e;
+
+  /* 状态/方法药丸（始终黑字） */
+  --pill-text: #1a1412;
+
+  --pill-2xx: #9ee5a8;
+  --pill-3xx: #f5dd87;
+  --pill-4xx: #f0a4a4;
+  --pill-5xx: #f7b573;
+  --pill-default: #d8d0c8;
+
+  --pill-get: #a8e0b8;
+  --pill-post: #a8c8e8;
+  --pill-put: #f5c890;
+  --pill-delete: #f0a4a4;
+  --pill-patch: #d8b8e8;
+  --pill-other: #d8d0c8;
+
+  --json-key: #ff8559;
+  --json-string: #98c98c;
+  --json-number: #f5c890;
+  --json-boolean: #d8b8e8;
+  --json-null: #a89992;
+
+  --mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
+  --shadow: 0 2px 12px rgba(255, 107, 53, 0.08);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #fffaf6;
+    --bg-alt: #fff2e8;
+    --bg-row-hover: #ffe4d4;
+    --bg-row-selected: #ffd1b5;
+    --fg: #2a1814;
+    --fg-dim: #7a5b4f;
+    --border: #f0d8c4;
+    --border-strong: #e0b890;
+
+    --primary: #d94f1e;
+    --primary-hover: #ff6b35;
+    --primary-soft: #ffe2d2;
+    --primary-dim: #a83a13;
+
+    --json-key: #d94f1e;
+    --json-string: #2c7a1e;
+    --json-number: #b85f00;
+    --json-boolean: #7a3acc;
+    --json-null: #999;
+
+    --shadow: 0 2px 12px rgba(217, 79, 30, 0.08);
+  }
+}
+
+* { box-sizing: border-box; }
+.hidden { display: none !important; }
+html, body, #app { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font: 12px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+#app { display: flex; flex-direction: column; }

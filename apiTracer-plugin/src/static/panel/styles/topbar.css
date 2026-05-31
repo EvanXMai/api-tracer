@@ -1,0 +1,164 @@
+/* ---------- 顶部条：Logo / 搜索 / 筛选 / 已读 / 清空 / 配置 ---------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  /* 顶部一行不够时换行（搜索框单独占一行 / 按钮分两行），永远保证所有控件可见可点 */
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  padding: 8px 12px;
+  background: linear-gradient(180deg, var(--bg-alt) 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border-strong);
+  flex: 0 0 auto;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--primary);
+  letter-spacing: 0.3px;
+}
+.brand-logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* ---------- 搜索框 ---------- */
+.search {
+  flex: 1 1 160px;
+  /* 允许压缩到比较窄；再窄就由 .topbar 的 flex-wrap 把它换到下一行 */
+  min-width: 120px;
+  padding: 5px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 4px;
+  outline: none;
+  transition: border-color .15s;
+}
+.search:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-soft);
+}
+
+/* ---------- 通用按钮 ----------
+   统一高度：26px，所有按钮共享同一行高/盒模型，避免图标按钮与文字按钮错位 */
+.btn, .btn-close {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all .15s;
+  font: inherit;
+  box-sizing: border-box;
+  height: 26px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 防止 flex 父容器把按钮压扁；按钮永远保持可点击的最小尺寸 */
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--bg-row-hover); border-color: var(--border-strong); }
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+.btn-close {
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 8px;
+  color: var(--fg-dim);
+}
+.btn-close:hover { color: var(--primary); background: transparent; }
+
+/* ---------- 蒙版图标（颜色随 currentColor） ---------- */
+.btn-icon {
+  padding: 4px 8px;
+}
+.icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  -webkit-mask: var(--icon-src) center / contain no-repeat;
+          mask: var(--icon-src) center / contain no-repeat;
+}
+.icon-filter  { --icon-src: url(../../icons/filter.svg); }
+.icon-edit    { --icon-src: url(../../icons/edit.svg); }
+.icon-trash   { --icon-src: url(../../icons/trash.svg); }
+.icon-close   { --icon-src: url(../../icons/close.svg); }
+.icon-refresh { --icon-src: url(../../icons/refresh.svg); }
+
+/* ---------- 筛选按钮 + 下拉菜单 ----------
+   默认 = 浅橙（primary-hover），hover/active = 橙红（primary） */
+.filter-wrap { position: relative; display: inline-flex; }
+.btn-filter { color: var(--primary-hover); border-color: var(--border); }
+.btn-filter:hover {
+  color: var(--primary);
+  background: var(--bg-row-hover);
+  border-color: var(--primary);
+}
+.btn-filter.active {
+  color: var(--primary);
+  background: var(--primary-soft);
+  border-color: var(--primary);
+}
+
+/* 刷新按钮：常态灰，hover 主色 */
+.btn-refresh { color: var(--fg-dim); border-color: var(--border); }
+.btn-refresh:hover {
+  color: var(--primary);
+  background: var(--bg-row-hover);
+  border-color: var(--primary);
+}
+
+.filter-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  background: var(--bg-alt);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  box-shadow: var(--shadow);
+  min-width: 160px;
+  z-index: 10;
+}
+.filter-menu.hidden { display: none; }
+.filter-menu li {
+  padding: 6px 14px;
+  cursor: pointer;
+  color: var(--fg);
+  font-size: 12px;
+  white-space: nowrap;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.filter-menu li:hover { background: var(--bg-row-hover); }
+.filter-menu li.active { color: var(--primary); font-weight: 600; }
+.filter-menu li.active::before {
+  content: '✓';
+  font-size: 11px;
+}
+.filter-menu li:not(.active)::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+}

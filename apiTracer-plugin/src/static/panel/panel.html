@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ApiTracer</title>
+    <link rel="stylesheet" href="./styles/theme.css" />
+    <link rel="stylesheet" href="./styles/topbar.css" />
+    <link rel="stylesheet" href="./styles/list.css" />
+    <link rel="stylesheet" href="./styles/detail.css" />
+    <link rel="stylesheet" href="./styles/json-tree.css" />
+    <link rel="stylesheet" href="./styles/settings.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <span class="brand">
+          <img class="brand-logo" src="../icons/logo.png" alt="" />ApiTracer
+        </span>
+        <input
+          id="search"
+          class="search"
+          type="text"
+          placeholder="搜索接口名称 / 路径"
+        />
+        <button id="refresh" class="btn btn-icon btn-refresh" title="刷新页面与请求">
+          <span class="icon icon-refresh" aria-hidden="true"></span>
+        </button>
+        <div class="filter-wrap">
+          <button id="filter" class="btn btn-icon btn-filter" title="筛选" aria-haspopup="true" aria-expanded="false">
+            <span class="icon icon-filter" aria-hidden="true"></span>
+          </button>
+          <ul id="filter-menu" class="filter-menu hidden" role="menu">
+            <li role="menuitemradio" data-value="all" class="active">全部显示</li>
+            <li role="menuitemradio" data-value="success">只显示成功</li>
+            <li role="menuitemradio" data-value="fail">只显示失败</li>
+            <li role="menuitemradio" data-value="prefix">只显示前缀 api</li>
+            <li role="menuitemradio" data-value="named">只显示有接口名称</li>
+          </ul>
+        </div>
+        <button id="mark-read" class="btn" title="将所有新加载的接口标记为已读">已读</button>
+        <button id="clear" class="btn" title="清空当前列表">清空</button>
+        <button id="settings" class="btn btn-primary" title="配置">配置</button>
+      </header>
+
+      <main class="body" id="body">
+        <section class="list" id="list-pane">
+          <div class="list-scroll">
+            <table class="req-table">
+              <thead>
+                <tr>
+                  <th class="col-name">
+                    <div class="th-name-inner">
+                      <span class="col-name-label">接口名称</span>
+                      <span id="unread-badge" class="unread-badge hidden" aria-live="polite" aria-label="未读请求数"></span>
+                    </div>
+                  </th>
+                  <th class="col-method">方法</th>
+                  <th class="col-biz">成功</th>
+                  <th class="col-status">状态</th>
+                  <th class="col-url">路径</th>
+                </tr>
+              </thead>
+              <tbody id="req-tbody"></tbody>
+            </table>
+            <div class="empty" id="empty">
+              尚无请求，请点击刷新页面触发请求。</br> 如未看到接口名称，请确认已接入 api-tracer-ast。
+            </div>
+          </div>
+        </section>
+
+        <div class="splitter" id="splitter" role="separator" aria-orientation="vertical" tabindex="0" title="拖动调整宽度"></div>
+
+        <aside class="detail hidden" id="detail-pane">
+          <header class="detail-head">
+            <nav class="detail-tabs" role="tablist">
+              <button class="tab active" data-tab="request" role="tab">Request</button>
+              <button class="tab" data-tab="response" role="tab">Response</button>
+              <button class="tab" data-tab="preview" role="tab">Preview</button>
+            </nav>
+            <button class="btn-close" id="detail-close" title="关闭">×</button>
+          </header>
+          <div class="detail-body">
+            <div class="tab-pane active" data-tab="request" id="pane-request"></div>
+            <div class="tab-pane" data-tab="response" id="pane-response"></div>
+            <div class="tab-pane" data-tab="preview" id="pane-preview"></div>
+          </div>
+        </aside>
+      </main>
+
+      <dialog id="settings-dialog" class="settings">
+        <form method="dialog" id="settings-form">
+          <button type="button" id="settings-close" class="dialog-close" title="关闭" aria-label="关闭">
+            <span class="icon icon-close" aria-hidden="true"></span>
+          </button>
+          <h3>业务成功判断函数</h3>
+          <p id="api-prefix-display" class="api-prefix-display">当前暂无配置api前缀，请在构建文件中配置。</p>
+          <p class="hint">
+            参数 <code>res</code> 是解析后的响应体本身（与 Preview 一致）。支持三种写法：箭头函数
+            <code>res =&gt; res.success === true</code>、普通函数
+            <code>function(res){ return res.success === true }</code>、裸表达式
+            <code>res.success === true</code>。
+            <strong>裸表达式只能使用 <code>res</code> 作为变量名</strong>；箭头/普通函数的参数名可自定义。
+          </p>
+
+          <div class="fn-list-toolbar">
+            <span class="editor-label">已保存（<span id="fn-count">0</span>/5）</span>
+            <div class="fn-toolbar-actions">
+              <button type="button" id="fn-batch-toggle" class="btn btn-mini" title="批量选择">批量</button>
+              <button type="button" id="fn-bulk-delete" class="btn btn-mini hidden" title="删除选中">删除</button>
+            </div>
+          </div>
+          <ul id="fn-list" class="fn-list" role="list"></ul>
+
+          <div class="fn-form">
+            <div class="fn-form-row">
+              <label for="fn-name">名称</label>
+              <input id="fn-name" class="fn-name-input" type="text" maxlength="10" />
+            </div>
+            <div class="editor-toolbar">
+              <span class="editor-label">代码</span>
+              <button type="button" id="settings-format" class="btn btn-mini" title="格式化代码">格式化</button>
+            </div>
+            <div id="settings-editor" class="editor-host"></div>
+            <div id="settings-error" class="err"></div>
+            <div class="fn-form-actions">
+              <button type="button" id="fn-cancel-edit" class="btn btn-mini hidden">取消编辑</button>
+              <button type="button" id="fn-submit" class="btn btn-primary">新增</button>
+            </div>
+          </div>
+        </form>
+      </dialog>
+
+      <dialog id="confirm-dialog" class="confirm-dialog">
+        <button type="button" id="confirm-close" class="dialog-close" title="关闭" aria-label="关闭">
+          <span class="icon icon-close" aria-hidden="true"></span>
+        </button>
+        <p id="confirm-message" class="confirm-message"></p>
+        <div class="confirm-actions">
+          <button type="button" id="confirm-cancel" class="btn">取消</button>
+          <button type="button" id="confirm-ok" class="btn btn-primary">确定</button>
+        </div>
+      </dialog>
+    </div>
+    <script type="module" src="./panel.js"></script>
+  </body>
+</html>

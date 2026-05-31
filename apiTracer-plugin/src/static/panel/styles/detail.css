@@ -1,0 +1,137 @@
+/* ---------- 详情区：容器 / Tabs / Section / KV / Codeblock ---------- */
+
+.detail {
+  /* 与 .list 配合：两边都用 flex-grow 占比；splitter 拖动同步修改两边 flex-grow，
+   * 容器变窄时两边按比例缩放，不会出现右边界被裁。
+   * 默认比例：detail:list = 480:remaining，由 splitter.ts 初始化时设置 */
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-alt);
+  overflow: hidden;
+}
+.detail.hidden { display: none; }
+
+.detail-head {
+  display: flex;
+  align-items: center;
+  /* 极窄时让 tabs 换行，避免 Preview 被切掉或挤没 */
+  flex-wrap: wrap;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 4px 0 0;
+}
+.detail-tabs {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.detail-tabs .tab {
+  background: transparent;
+  border: none;
+  color: var(--fg-dim);
+  padding: 8px 12px;
+  font: inherit;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all .15s;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+.detail-tabs .tab:hover { color: var(--fg); background: var(--bg-row-hover); }
+.detail-tabs .tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
+}
+
+.detail-body {
+  flex: 1;
+  overflow: auto;
+  padding: 0;
+}
+.tab-pane { display: none; padding: 12px; }
+.tab-pane.active { display: block; }
+
+/* ---------- 折叠区块（Request/Response/Preview 内部分组） ---------- */
+.section {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.section > summary {
+  cursor: pointer;
+  padding: 8px 12px;
+  background: var(--bg-alt);
+  color: var(--primary);
+  font-weight: 600;
+  list-style: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background .15s;
+}
+.section > summary::-webkit-details-marker { display: none; }
+.section > summary::before {
+  content: '▸';
+  display: inline-block;
+  transition: transform .15s;
+  color: var(--fg-dim);
+  font-size: 10px;
+}
+.section[open] > summary::before { transform: rotate(90deg); }
+.section > summary:hover { background: var(--bg-row-hover); }
+.section > .section-body {
+  padding: 10px 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.section-meta {
+  margin-left: auto;
+  color: var(--fg-dim);
+  font-weight: 400;
+  font-size: 11px;
+  font-family: var(--mono);
+}
+
+/* ---------- KV 表（请求/响应行 key-value） ---------- */
+.kv {
+  display: grid;
+  /* 第一列允许从 80px 起按 key 自身宽度收缩，第二列占满剩余空间；
+   * 详情区窄到放不下 key+value 时由 word-break 处理 */
+  grid-template-columns: minmax(80px, auto) minmax(0, 1fr);
+  gap: 4px 12px;
+}
+.kv .k {
+  color: var(--primary);
+  font-family: var(--mono);
+  font-size: 11px;
+  word-break: break-all;
+}
+.kv .v {
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 11px;
+  word-break: break-all;
+  white-space: pre-wrap;
+  /* 关键：grid 子项默认 min-width:auto，长 URL 会撑爆右边界，必须显式置 0 */
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- 代码块（headers / body 文本展示） ---------- */
+.codeblock {
+  margin: 0;
+  padding: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: var(--fg);
+}
+.codeblock.empty { color: var(--fg-dim); font-style: italic; }

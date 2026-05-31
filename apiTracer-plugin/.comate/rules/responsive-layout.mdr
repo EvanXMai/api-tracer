@@ -1,0 +1,45 @@
+---
+description: 任何会因宽/高收窄而被遮挡、溢出或显示不全的 UI 都必须做响应式处理
+alwaysApply: true
+---
+
+# 响应式布局强制规则
+
+只要新增 / 修改 UI（HTML、CSS、动态创建 DOM 的 TS），就必须考虑容器在极窄 / 极矮场景下的表现。
+**不允许出现"窗口收窄后元素被挡住、被裁掉、滚动条消失、关键操作够不到"的情况。**
+
+## 必做项
+
+1. **flex 容器的子项**：需要可压缩的子项一律加 `min-width: 0`（或 `min-height: 0`），否则 flex item 默认 `min-width: auto` 不会真正收缩。
+2. **两栏 / 多栏布局**：用 `flex-grow` 比例分配宽度（如 `flex: 1 1 0`），不要写死 `flex-basis: 480px` 这种绝对宽度——绝对宽度之和大于容器时必然溢出。
+3. **工具栏 / tab 栏**：横向放不下时必须 `flex-wrap: wrap` 换行，禁止靠 `overflow: hidden` 把按钮藏掉。
+4. **文本单元格**：`white-space: nowrap; overflow: hidden; text-overflow: ellipsis;` 三件套；表格列宽用百分比 + `table-layout: fixed`。
+5. **网格 / KV 列表**：`grid-template-columns` 中可伸缩列写 `minmax(0, 1fr)`，避免内容把列撑爆。
+6. **可滚动区域**：必须在祖先链上保证 `min-height: 0` / `min-width: 0` 传递，否则内层 `overflow: auto` 不会出滚动条。
+7. **显隐切换**：元素从 `display: none` 切回显示时，若使用了 `flex-grow` 比例布局，必须**同时重置 grow 比例**（参考 `splitter.ts` 中的 `relayoutForDetailVisible/Hidden`），不能只 `classList.remove('hidden')`。
+
+## 反例 → 正例
+
+```css
+/* BAD：detail 写死 480px，窗口收窄时右边界被挡 */
+.detail { flex: 0 0 480px; }
+
+/* GOOD：按比例伸缩，永远不会撑爆容器 */
+.detail { flex: 1 1 0; min-width: 0; }
+```
+
+```css
+/* BAD：按钮挤不下时被裁掉 */
+.topbar { display: flex; overflow: hidden; }
+
+/* GOOD：自动换行，按钮永远可点 */
+.topbar { display: flex; flex-wrap: wrap; gap: 8px 10px; }
+.topbar .btn { flex: 0 0 auto; white-space: nowrap; }
+```
+
+## 自检清单（提交前）
+
+- [ ] 把 DevTools 面板宽度拉到最小，所有按钮 / 关键操作仍可见可点？
+- [ ] 长文本是否优雅省略而不是撑破布局？
+- [ ] 两栏面板任一侧是否都能在极窄宽度下保留滚动条 / 关闭按钮？
+- [ ] 显隐切换后，flex-grow 比例是否被正确恢复？

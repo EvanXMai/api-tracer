@@ -1,0 +1,229 @@
+/* ---------- 主体布局 + 列表 + 分隔条 ---------- */
+
+.body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  /* 极窄场景下 list/detail 都会按 flex-grow 等比缩放，不再依赖横向滚动条 */
+  min-width: 0;
+  overflow: hidden;
+}
+.list {
+  /* flex-grow 表示占比，splitter 拖动会同步修改它和 .detail 的 flex-grow，
+   * 因此窗口缩放时两侧按比例平滑伸缩，不会出现"最小总宽撑不下"导致的右边界被挡 */
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.list-scroll {
+  overflow: auto;
+  flex: 1;
+  position: relative;
+}
+
+/* ---------- 分隔条（拖拽改变详情区宽度） ---------- */
+.splitter {
+  flex: 0 0 5px;
+  background: var(--border);
+  cursor: col-resize;
+  position: relative;
+  transition: background .15s;
+}
+.splitter:hover, .splitter.dragging { background: var(--primary); }
+.splitter::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1px;
+  height: 30px;
+  background: var(--border-strong);
+}
+.splitter.hidden { display: none; }
+
+/* ---------- 请求列表 ---------- */
+.req-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  /* fixed 让列宽严格按下面百分比分配，溢出由各 td 的 ellipsis 处理 */
+  table-layout: fixed;
+}
+.req-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-alt);
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border-strong);
+  border-right: 1px solid var(--border);
+  font-weight: 600;
+  color: var(--fg-dim);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 1;
+  /* 表头同样支持省略，避免列变窄时撑开整张表 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.req-table thead th:last-child { border-right: none; }
+/* 方法 / 成功 / 状态 三列表头同步居中 */
+.req-table thead th.col-method,
+.req-table thead th.col-biz,
+.req-table thead th.col-status { text-align: center; }
+/* 接口名称表头：保持 table-cell（sticky 才生效），用内部 wrapper 做 flex 布局 */
+.req-table thead th.col-name .th-name-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.req-table thead th.col-name.has-unread .col-name-label {
+  color: #f5c518;
+}
+.req-table thead th.col-name.has-unread.blink .col-name-label,
+.req-table thead th.col-name.has-unread.blink .unread-badge {
+  animation: api-tracer-fresh-blink 1s ease-in-out 5;
+}
+
+/* 未读 badge：表头内，黄字 + 边框，>99 → 99+，0 时隐藏 */
+.unread-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 16px;
+  padding: 0 5px;
+  background: transparent;
+  color: #f5c518;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--mono);
+  line-height: 1;
+  border: 1px solid #f5c518;
+  border-radius: 8px;
+  letter-spacing: 0;
+  text-transform: none;
+  user-select: none;
+}
+.unread-badge.hidden { display: none; }
+.req-table tbody tr {
+  cursor: pointer;
+  transition: background .1s;
+}
+.req-table tbody tr:hover { background: var(--bg-row-hover); }
+.req-table tbody tr.selected { background: var(--bg-row-selected); }
+.req-table tbody tr.selected:hover { background: var(--bg-row-selected); }
+.req-table td {
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+.req-table td.col-method,
+.req-table td.col-biz,
+.req-table td.col-status {
+  padding-left: clamp(0px, 1.2vw, 10px);
+  padding-right: clamp(0px, 1.2vw, 10px);
+}
+.req-table td:last-child { border-right: none; }
+
+/* 列宽策略（table-layout: fixed）：
+   接口名称 : 方法 : 成功 : 状态 : 路径 = 3 : 1 : 1 : 1 : 4
+   - 列宽随容器整体伸缩，所有列同步缩放
+   - 文本溢出统一显示省略号（td 已设置 overflow:hidden + ellipsis）
+   - 药丸（method/status/biz）若超出窄列，由 td overflow 裁剪 */
+.col-name   { width: 30%; color: var(--primary); font-weight: 600; }
+.col-method { width: 10%; text-align: center; }
+.col-biz    { width: 10%; text-align: center; color: var(--fg-dim); }
+.col-status { width: 10%; text-align: center; }
+.col-url    { width: 40%; }
+
+/* "新到达且未点击" 的接口名样式：
+   - 字色黄
+   - 名字右侧一个小黄点（::after 实现，无需额外 DOM）
+   - 进入页面时闪烁 5 次（每次 1s，合计 5s）后停在常亮黄色
+   用户点击行后 .fresh 被移除，恢复橙红色，黄点消失。 */
+.col-name.fresh {
+  color: #f5c518;
+  position: relative;
+}
+.col-name.fresh::after {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: #f5c518;
+  box-shadow: 0 0 6px #f5c518;
+  vertical-align: middle;
+}
+.col-name.fresh.blink {
+  animation: api-tracer-fresh-blink 1s ease-in-out 5;
+}
+@keyframes api-tracer-fresh-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+
+/* ---------- 药丸（始终黑字） ---------- */
+.pill {
+  display: inline-block;
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 1px clamp(2px, 0.8vw, 8px);
+  border-radius: 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--pill-text) !important;
+  line-height: 16px;
+  min-width: min(38px, 100%);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+.pill-method-GET     { background: var(--pill-get); }
+.pill-method-POST    { background: var(--pill-post); }
+.pill-method-PUT     { background: var(--pill-put); }
+.pill-method-DELETE  { background: var(--pill-delete); }
+.pill-method-PATCH   { background: var(--pill-patch); }
+.pill-method-default { background: var(--pill-other); }
+
+.pill-status-2 { background: var(--pill-2xx); }
+.pill-status-3 { background: var(--pill-3xx); }
+.pill-status-4 { background: var(--pill-4xx); }
+.pill-status-5 { background: var(--pill-5xx); }
+.pill-status-x { background: var(--pill-default); }
+
+/* 成功列：药丸 ✓ / ✗ / -- 占位 */
+.pill-biz-ok { background: var(--pill-2xx); }
+.pill-biz-fail { background: var(--pill-4xx); }
+.biz-empty {
+  display: inline-block;
+  max-width: 100%;
+  color: var(--fg-dim);
+  font-family: var(--mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--fg-dim);
+  font-size: 12px;
+}
+.empty.hidden { display: none; }
