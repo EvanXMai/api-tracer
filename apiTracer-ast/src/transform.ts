@@ -12,7 +12,7 @@ import type {
   TransformResult,
 } from './types'
 
-const RUNTIME_IMPORT = 'api-tracer-ast/runtime'
+const DEFAULT_RUNTIME_IMPORT = 'api-tracer-ast/runtime'
 const INJECT_CONFIG = '__apiTracerInjectConfig'
 const INJECT_OBJECT_CONFIG = '__apiTracerInjectObjectConfig'
 const INIT = '__apiTracerInit'
@@ -88,7 +88,7 @@ export function transformCode(
 
   if (!changed) return { code, map: null, changed: false }
   if (needsRuntimeImport) {
-    addRuntimeImport(ast.program)
+    addRuntimeImport(ast.program, config)
     addRuntimeInit(ast.program, config)
   }
 
@@ -233,9 +233,10 @@ function isRuntimeCall(node: t.CallExpression): boolean {
   )
 }
 
-function addRuntimeImport(program: t.Program): void {
+function addRuntimeImport(program: t.Program, config: NormalizedConfig): void {
+  const runtimeImport = config.runtimeImport || DEFAULT_RUNTIME_IMPORT
   const alreadyImported = program.body.some(
-    (node) => t.isImportDeclaration(node) && node.source.value === RUNTIME_IMPORT,
+    (node) => t.isImportDeclaration(node) && node.source.value === runtimeImport,
   )
   if (alreadyImported) return
   program.body.unshift(
@@ -245,7 +246,7 @@ function addRuntimeImport(program: t.Program): void {
         t.importSpecifier(t.identifier(INJECT_CONFIG), t.identifier(INJECT_CONFIG)),
         t.importSpecifier(t.identifier(INJECT_OBJECT_CONFIG), t.identifier(INJECT_OBJECT_CONFIG)),
       ],
-      t.stringLiteral(RUNTIME_IMPORT),
+      t.stringLiteral(runtimeImport),
     ),
   )
 }

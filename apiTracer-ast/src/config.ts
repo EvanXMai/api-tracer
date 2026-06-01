@@ -36,6 +36,7 @@ export function normalizeConfig(
     defaultRequestName: raw.defaultRequestName || 'none-name',
     clients: clients.map((client) => normalizeClientRule(client, resolver, normalizedRootDir)),
     resolver,
+    runtimeImport: raw.runtimeImport || 'api-tracer-ast/runtime',
   }
 }
 

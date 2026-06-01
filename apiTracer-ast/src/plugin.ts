@@ -1,3 +1,5 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { mergeResolverOptions, normalizeConfig } from './config'
 import { transformCode } from './transform'
 import type { ApiTracerAstPluginOptions, NormalizedConfig, ResolverOptions } from './types'
@@ -8,6 +10,7 @@ interface CompilerLike {
     module?: { rules?: unknown[] }
     resolve?: CompilerResolveOptions
   }
+  webpack?: { version?: string }
   hooks?: {
     compilation?: { tap: (name: string, handler: (compilation: CompilationLike) => void) => void }
   }
@@ -49,6 +52,7 @@ export class ApiTracerAstPlugin {
     const compilerResolver = normalizeCompilerResolver(resolve)
     return {
       ...this.options,
+      runtimeImport: this.options.runtimeImport || resolveBundledRuntime(),
       resolver: mergeResolverOptions(this.options.resolver, compilerResolver),
     }
   }
@@ -65,7 +69,7 @@ export class ApiTracerAstPlugin {
       enforce: 'pre',
       use: [
         {
-          loader: 'api-tracer-ast/loader',
+          loader: resolveBundledLoader(),
           options,
         },
       ],
@@ -87,6 +91,20 @@ export class ApiTracerAstPlugin {
       })
     })
   }
+}
+
+function resolveBundledLoader(): string {
+  return resolveBundledFile('loader')
+}
+
+function resolveBundledRuntime(): string {
+  return resolveBundledFile('runtime')
+}
+
+function resolveBundledFile(name: string): string {
+  const currentFile = typeof __filename === 'string' ? __filename : fileURLToPath(import.meta.url)
+  const extension = currentFile.endsWith('.cjs') ? '.cjs' : '.js'
+  return path.join(path.dirname(currentFile), `${name}${extension}`)
 }
 
 function normalizeCompilerResolver(resolve: CompilerResolveOptions | undefined): ResolverOptions | undefined {

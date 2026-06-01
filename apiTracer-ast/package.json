@@ -1,6 +1,6 @@
 {
   "name": "api-tracer-ast",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "ApiTracer AST transformer: inject request name headers during build without modifying source files.",
   "type": "module",
   "main": "./dist/index.cjs",

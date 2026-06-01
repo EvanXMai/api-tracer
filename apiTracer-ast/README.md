@@ -4,7 +4,7 @@
 
 `api-tracer-ast` 是 ApiTracer 的构建期 npm 包，负责在开发构建阶段自动识别 axios-like 请求调用，并为命中 API 前缀的请求注入 `X-Request-Name` 请求头。它不会直接修改业务源码文件，而是在构建产物中完成注入，适合希望保持源码零侵入、但又需要在 ApiTracer 浏览器插件中看到接口函数名的前端项目。
 
-本包需要配合 [ApiTracer 浏览器插件](../apiTracer-plugin) 使用；完整产品说明见 [ApiTracer 根目录 README](../README.md)。
+本包需要配合ApiTracer浏览器插件使用，github地址：[ApiTracer](https://github.com/EvanXMai/api-tracer)
 
 ## 安装
 
@@ -60,6 +60,7 @@ module.exports = {
 
 Plugin 方式会自动读取构建工具里的 `resolve.alias` 和 `resolve.extensions`，一般不需要在 `ApiTracerAstPlugin` 中重复配置 `resolver`。
 
+
 ### Loader 方式
 
 ```js
@@ -97,9 +98,10 @@ module.exports = {
 }
 ```
 
+Loader 单独使用时会自动使用包内绝对路径注入 runtime，Webpack 4/5 均不需要再手动配置 `api-tracer-ast/runtime` alias。
+
 Loader 单独使用时不一定能拿到构建工具完整 `resolve` 配置。如果 `clients[].from` 使用 alias，建议在 loader `options.resolver` 中手动补充。
 
-从 `0.2.0` 开始，不再支持 `apitracer.config.json`。所有配置都写在 plugin 或 loader 的 `options` 中。
 
 ## 配置参数
 
@@ -115,6 +117,7 @@ Loader 单独使用时不一定能拿到构建工具完整 `resolve` 配置。�
 - `clients[].objectCall`：选填，声明 `request({ url, headers })` 对象式调用中的字段名。
 - `resolver.alias`：选填，路径别名，例如 `{ "@api": "src/api", "@": "src" }`。Plugin 方式会优先复用构建工具的 alias，手动配置用于兜底或覆盖。
 - `resolver.extensions`：选填，默认 `['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs']`。Plugin 方式会优先复用构建工具的 extensions，手动配置用于兜底或覆盖。
+- `runtimeImport`：选填，运行时代码 import 路径。默认由 Plugin/Loader 自动填充包内 runtime 绝对路径；CLI 和直接调用 `transformCode` 时默认使用 `api-tracer-ast/runtime`。
 
 默认 axios-like 方法规则：
 
@@ -221,6 +224,12 @@ request({
 
 转换后会合并 `headers`，并在运行时判断 URL 是否匹配 `urlPrefixes`。
 
+
+## 构建工具兼容性
+
+- Webpack 5：支持 Plugin 和 Loader 方式，无需额外配置 `exports` 子路径 alias。
+- Webpack 4：支持 Plugin 和 Loader 方式，包会自动使用 `dist/loader.cjs` 和 `dist/runtime.cjs` 的绝对路径，无需手动配置 `api-tracer-ast/loader` 或 `api-tracer-ast/runtime` alias。
+- Vite：不需要 Webpack loader。可在 Vite 插件的 `transform` 钩子中直接调用 `transformCode`，此时建议显式配置 `runtimeImport: 'api-tracer-ast/runtime'`，Vite 能正常解析 package exports。
 
 ## 生产环境
 

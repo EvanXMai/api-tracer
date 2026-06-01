@@ -1,11 +1,14 @@
 # ApiTracer
 
+
+<p align="center">
+  <a href="./apiTracer-plugin"><img src="https://img.shields.io/badge/浏览器插件-ApiTracer-2f80ed" alt="浏览器插件" /></a>
+  <a href="./apiTracer-ast"><img src="https://img.shields.io/badge/npm-package-2f80ed" alt="npm package" /></a>
+  <a href="https://www.npmjs.com/package/api-tracer-ast?activeTab=readme"><img src="https://img.shields.io/badge/api--tracer--ast-npm-cb3837" alt="api-tracer-ast" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-4c1" alt="license MIT" /></a>
+</p>
+
 ApiTracer 是一个面向前端开发调试的接口语义化追踪工具。它由浏览器 DevTools 插件和构建期 npm 包组成，可以在不修改业务源码文件的前提下，把接口请求与业务函数名关联起来，在浏览器 DevTools 面板中按“接口名称”维度查看请求、筛选请求并判断业务成功状态。
-
-## 快速跳转
-
-- [ApiTracer 浏览器插件](./apiTracer-plugin)：DevTools 面板插件，用于展示接口名称、请求详情和业务成功状态。
-- [api-tracer-ast npm 包](./apiTracer-ast)：构建期 AST 转换包，用于自动注入接口名称请求头。
 
 ## 产品介绍
 
@@ -20,6 +23,19 @@ ApiTracer 的核心能力：
 - **业务成功判断**：插件面板支持配置多个业务成功判断函数，例如 `res => res.code === 0`，并对匹配 API 前缀的请求标记成功/失败。
 - **请求筛选和详情查看**：支持按接口名/URL 搜索，按成功、失败、API 前缀、有接口名等维度筛选，并查看 Request、Response、Preview。
 
+## 演示效果
+
+<table>
+  <tr>
+    <td><img src="./assets/home.png" alt="ApiTracer 首页" /></td>
+    <td><img src="./assets/filter.png" alt="ApiTracer 筛选" /></td>
+  </tr>
+  <tr>
+    <td><img src="./assets/preview.png" alt="ApiTracer 预览" /></td>
+    <td><img src="./assets/setting.png" alt="ApiTracer 配置" /></td>
+  </tr>
+</table>
+
 ## 使用说明 / 安装步骤
 
 ApiTracer 推荐只在开发环境启用。完整接入需要两部分：
@@ -28,6 +44,8 @@ ApiTracer 推荐只在开发环境启用。完整接入需要两部分：
 2. 在浏览器中安装 ApiTracer DevTools 插件。
 
 ### 1. 安装 npm 包
+
+npm包地址：[api-tracer-ast](https://www.npmjs.com/package/api-tracer-ast?activeTab=readme)
 
 ```bash
 npm install api-tracer-ast --save-dev
@@ -116,10 +134,6 @@ npm run build
 3. 触发接口请求。
 4. 插件会显示接口名称、方法、业务成功状态、HTTP 状态、URL 路径。
 5. 点击“配置”可设置业务成功判断函数；如果 npm 包配置了 API 前缀，配置面板会显示当前前缀。
-
-## 演示
-
-演示截图待补充。
 
 ## 开源协议
 

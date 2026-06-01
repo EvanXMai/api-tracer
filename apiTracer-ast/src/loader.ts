@@ -1,3 +1,5 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { normalizeConfig } from './config'
 import { transformCode } from './transform'
 import type { ApiTracerAstPluginOptions, LoaderContextLike } from './types'
@@ -30,7 +32,21 @@ export default function apiTracerAstLoader(
 }
 
 function getLoaderOptions(context: LoaderContextLike): ApiTracerAstPluginOptions {
+  const options = readLoaderOptions(context)
+  return {
+    ...options,
+    runtimeImport: options.runtimeImport || resolveBundledRuntime(),
+  }
+}
+
+function readLoaderOptions(context: LoaderContextLike): ApiTracerAstPluginOptions {
   if (typeof context.getOptions === 'function') return context.getOptions()
   if (context.query && typeof context.query === 'object') return context.query as ApiTracerAstPluginOptions
   return { include: [], urlPrefixes: [] }
+}
+
+function resolveBundledRuntime(): string {
+  const currentFile = typeof __filename === 'string' ? __filename : fileURLToPath(import.meta.url)
+  const extension = currentFile.endsWith('.cjs') ? '.cjs' : '.js'
+  return path.join(path.dirname(currentFile), `runtime${extension}`)
 }

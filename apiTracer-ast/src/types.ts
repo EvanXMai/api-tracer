@@ -29,6 +29,7 @@ export interface ApiTracerAstPluginOptions {
   defaultRequestName?: string
   clients?: ClientRule[]
   resolver?: ResolverOptions
+  runtimeImport?: string
 }
 
 export type ApiTracerAstConfig = ApiTracerAstPluginOptions
@@ -53,6 +54,7 @@ export interface NormalizedConfig {
   defaultRequestName: string
   clients: NormalizedClientRule[]
   resolver: Required<ResolverOptions>
+  runtimeImport: string
 }
 
 export interface TransformResult {
