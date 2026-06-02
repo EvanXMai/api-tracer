@@ -160,10 +160,6 @@ module.exports = {
 4. 若请求命中 `urlPrefixes`，且构建期成功注入 `X-Request-Name`，插件会展示接口名称。
 5. 点击右上角“配置”，可新增或编辑业务成功判断函数，例如 `res => res.code === 0`。
 
-## 演示
-
-演示截图待补充。
-
 ## 开源协议
 
 MIT License。详见 [LICENSE](./LICENSE)。

@@ -1,5 +1,8 @@
 # ApiTracer
 
+<p align="center">
+  <img src="./assets/logo.png" alt="ApiTracer Logo" width="120" />
+</p>
 
 <p align="center">
   <a href="./apiTracer-plugin"><img src="https://img.shields.io/badge/浏览器插件-ApiTracer-2f80ed" alt="浏览器插件" /></a>
@@ -7,6 +10,7 @@
   <a href="https://www.npmjs.com/package/api-tracer-ast?activeTab=readme"><img src="https://img.shields.io/badge/api--tracer--ast-npm-cb3837" alt="api-tracer-ast" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-4c1" alt="license MIT" /></a>
 </p>
+
 
 ApiTracer 是一个面向前端开发调试的接口语义化追踪工具。它由浏览器 DevTools 插件和构建期 npm 包组成，可以在不修改业务源码文件的前提下，把接口请求与业务函数名关联起来，在浏览器 DevTools 面板中按“接口名称”维度查看请求、筛选请求并判断业务成功状态。
 
@@ -120,7 +124,7 @@ npm install
 npm run build
 ```
 
-然后在浏览器中加载 `apiTracer-plugin/dist`：
+然后在浏览器中加载 `apiTracer-plugin/dist`，或者下载 [api-tracer-plugin](./apiTracer-plugin/api-tracer-plugin.zip) 的 zip 包并解压
 
 - Chrome：打开 `chrome://extensions/`，开启“开发者模式”，点击“加载已解压的扩展程序”。
 - Edge：打开 `edge://extensions/`，开启“开发人员模式”，点击“加载解压缩的扩展”。
