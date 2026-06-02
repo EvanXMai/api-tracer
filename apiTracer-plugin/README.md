@@ -1,10 +1,16 @@
 # ApiTracer 浏览器插件
 
+
+
+<p align="center">
+  <a href="../README.md"><img src="https://img.shields.io/badge/ApiTracer-README-2f80ed" alt="ApiTracer README" /></a>
+  <a href="../apiTracer-ast"><img src="https://img.shields.io/badge/api--tracer--ast-目录-2f80ed" alt="api-tracer-ast 目录" /></a>
+  <a href="https://www.npmjs.com/package/api-tracer-ast?activeTab=readme"><img src="https://img.shields.io/badge/npm-package-cb3837" alt="npm package" /></a>
+</p>
+
 ## 介绍
 
 ApiTracer 浏览器插件是 ApiTracer 产品的 DevTools 面板部分，用于在浏览器开发者工具中以业务接口函数名维度查看前端接口请求。插件配合 [`api-tracer-ast`](../apiTracer-ast) 使用：npm 包在构建期为 axios-like 请求注入 `X-Request-Name` 请求头，并通过 `window.postMessage` 向插件同步 API 前缀；插件在 DevTools 面板中读取网络请求、展示接口名称，并根据用户配置的业务成功判断函数标记请求结果。
-
-快速跳转：[api-tracer-ast npm 包目录](../apiTracer-ast) · [ApiTracer 根目录 README](../README.md)。
 
 主要能力：
 
@@ -57,6 +63,11 @@ DevTools Panel
 
 ```txt
 apiTracer-plugin/
+├── assets/                      演示截图资源
+│   ├── home.png
+│   ├── filter.png
+│   ├── preview.png
+│   └── setting.png
 ├── scripts/
 │   └── copy-static.mjs          构建后复制静态资源到 dist
 ├── src/
@@ -86,6 +97,7 @@ apiTracer-plugin/
 │       ├── devtools/            DevTools 页面 HTML
 │       ├── sandbox/             沙箱页面 HTML
 │       └── icons/               插件图标
+├── api-tracer-plugin.zip        dist 压缩包，解压后可直接加载到浏览器
 ├── package.json
 ├── tsconfig.json
 └── tsup.config.ts
@@ -106,6 +118,8 @@ cd apiTracer-plugin
 npm install
 npm run build
 ```
+
+或者直接解压 `api-tracer-plugin.zip`。
 
 2. 加载构建产物：
 
