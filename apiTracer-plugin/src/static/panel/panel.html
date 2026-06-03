@@ -46,7 +46,14 @@
       <main class="body" id="body">
         <section class="list" id="list-pane">
           <div class="list-scroll">
-            <table class="req-table">
+            <table class="req-table" id="req-table">
+              <colgroup>
+                <col class="col-name" />
+                <col class="col-method" />
+                <col class="col-biz" />
+                <col class="col-status" />
+                <col class="col-url" />
+              </colgroup>
               <thead>
                 <tr>
                   <th class="col-name">
@@ -54,10 +61,11 @@
                       <span class="col-name-label">接口名称</span>
                       <span id="unread-badge" class="unread-badge hidden" aria-live="polite" aria-label="未读请求数"></span>
                     </div>
+                    <span class="col-resizer col-resizer-name" data-resize="name" aria-hidden="true"></span>
                   </th>
                   <th class="col-method">方法</th>
                   <th class="col-biz">成功</th>
-                  <th class="col-status">状态</th>
+                  <th class="col-status">状态<span class="col-resizer col-resizer-url" data-resize="url" aria-hidden="true"></span></th>
                   <th class="col-url">路径</th>
                 </tr>
               </thead>

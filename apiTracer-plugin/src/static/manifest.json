@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ApiTracer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "前端请求语义化追踪。配合 api-tracer-ast，在 DevTools 中以业务函数名维度查看接口请求。",
   "minimum_chrome_version": "102",
   "devtools_page": "devtools/devtools.html",
