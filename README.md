@@ -1,7 +1,15 @@
-# ApiTracer
-
 <p align="center">
   <img src="./assets/logo.png" alt="ApiTracer Logo" width="120" />
+</p>
+
+<h1 align="center">ApiTracer</h1>
+
+<p align="center">
+一个面向前端开发调试的接口语义化追踪工具
+<br>
+由浏览器 DevTools 插件和构建期 npm 包组成
+<br>
+在浏览器 DevTools 面板中按“接口名称”维度查看请求、筛选请求并判断业务成功状态
 </p>
 
 <p align="center">
@@ -11,10 +19,7 @@
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-4c1" alt="license MIT" /></a>
 </p>
 
-
-ApiTracer 是一个面向前端开发调试的接口语义化追踪工具。它由浏览器 DevTools 插件和构建期 npm 包组成，可以在不修改业务源码文件的前提下，把接口请求与业务函数名关联起来，在浏览器 DevTools 面板中按“接口名称”维度查看请求、筛选请求并判断业务成功状态。
-
-## 产品介绍
+## 介绍
 
 传统 Network 面板只能展示 URL、状态码、耗时等网络层信息。当项目中存在大量动态 URL、统一请求实例、接口函数封装时，排查问题通常需要在代码和 Network 面板之间反复跳转。ApiTracer 解决的是“这个请求来自哪个业务接口函数”的问题。
 
@@ -68,41 +73,41 @@ pnpm add api-tracer-ast -D
 Plugin 方式示例：
 
 ```js
-const { ApiTracerAstPlugin } = require('api-tracer-ast/plugin')
+const { ApiTracerAstPlugin } = require("api-tracer-ast/plugin");
 
-const isDev = process.env.NODE_ENV !== 'production'
+const isDev = process.env.NODE_ENV !== "production";
 
 module.exports = {
   resolve: {
     alias: {
-      '@': 'src',
-      '@api': 'src/api'
+      "@": "src",
+      "@api": "src/api",
     },
-    extensions: ['.ts', '.tsx', '.js', '.jsx']
+    extensions: [".ts", ".tsx", ".js", ".jsx"],
   },
   plugins: [
     ...(isDev
       ? [
           new ApiTracerAstPlugin({
-            include: ['src/api', 'src/pages'],
-            exclude: ['**/*.test.ts', '**/*.spec.ts'],
-            urlPrefixes: ['/api', '/gateway'],
-            defaultRequestName: 'none-name',
+            include: ["src/api", "src/pages"],
+            exclude: ["**/*.test.ts", "**/*.spec.ts"],
+            urlPrefixes: ["/api", "/gateway"],
+            defaultRequestName: "none-name",
             clients: [
               {
-                name: 'request',
-                from: ['@api/request', '@/utils/request', 'src/request']
+                name: "request",
+                from: ["@api/request", "@/utils/request", "src/request"],
               },
               {
-                name: 'axios',
-                from: 'axios'
-              }
-            ]
-          })
+                name: "axios",
+                from: "axios",
+              },
+            ],
+          }),
         ]
-      : [])
-  ]
-}
+      : []),
+  ],
+};
 ```
 
 关键配置说明：
