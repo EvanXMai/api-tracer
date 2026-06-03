@@ -25,41 +25,40 @@ pnpm add api-tracer-ast@latest -D
 ### Plugin 方式
 
 ```js
-const { ApiTracerAstPlugin } = require('api-tracer-ast/plugin')
+const { ApiTracerAstPlugin } = require("api-tracer-ast/plugin");
 
 module.exports = {
   resolve: {
     alias: {
-      '@': 'src',
-      '@api': 'src/api'
+      "@": "src",
+      "@api": "src/api",
     },
-    extensions: ['.ts', '.tsx', '.js', '.jsx']
+    extensions: [".ts", ".tsx", ".js", ".jsx"],
   },
   plugins: [
     new ApiTracerAstPlugin({
-      include: ['src/api', 'src/pages'],
-      exclude: ['**/*.test.ts', '**/*.spec.ts'],
-      urlPrefixes: ['/api', '/gateway'],
-      defaultRequestName: 'none-name',
+      include: ["src/api", "src/pages"],
+      exclude: ["**/*.test.ts", "**/*.spec.ts"],
+      urlPrefixes: ["/api", "/gateway"],
+      defaultRequestName: "none-name",
       clients: [
         {
-          name: 'request',
-          from: ['@api/request', '@/utils/request', 'src/request']
+          name: "request",
+          from: ["@api/request", "@/utils/request", "src/request"],
         },
         {
-          name: 'axios',
-          from: 'axios'
-        }
-      ]
-    })
-  ]
-}
+          name: "axios",
+          from: "axios",
+        },
+      ],
+    }),
+  ],
+};
 ```
 
 `clients[].from` 用来校验请求客户端来源，建议配置。这样只有从指定模块导入的 `request`、`axios` 才会被转换，普通工具函数 `request()` 不会被误判。
 
 Plugin 方式会自动读取构建工具里的 `resolve.alias` 和 `resolve.extensions`，一般不需要在 `ApiTracerAstPlugin` 中重复配置 `resolver`。
-
 
 ### Loader 方式
 
@@ -69,39 +68,38 @@ module.exports = {
     rules: [
       {
         test: /\.[jt]sx?$/,
-        enforce: 'pre',
+        enforce: "pre",
         use: {
-          loader: 'api-tracer-ast/loader',
+          loader: "api-tracer-ast",
           options: {
-            include: ['src/api', 'src/pages'],
-            exclude: ['**/*.test.ts'],
-            urlPrefixes: ['/api'],
-            defaultRequestName: 'none-name',
+            include: ["src/api", "src/pages"],
+            exclude: ["**/*.test.ts"],
+            urlPrefixes: ["/api"],
+            defaultRequestName: "none-name",
             clients: [
               {
-                name: 'request',
-                from: ['@api/request', 'src/request']
-              }
+                name: "request",
+                from: ["@api/request", "src/request"],
+              },
             ],
             resolver: {
               alias: {
-                '@': 'src',
-                '@api': 'src/api'
+                "@": "src",
+                "@api": "src/api",
               },
-              extensions: ['.ts', '.tsx', '.js', '.jsx']
-            }
-          }
-        }
-      }
-    ]
-  }
-}
+              extensions: [".ts", ".tsx", ".js", ".jsx"],
+            },
+          },
+        },
+      },
+    ],
+  },
+};
 ```
 
-Loader 单独使用时会自动使用包内绝对路径注入 runtime，Webpack 4/5 均不需要再手动配置 `api-tracer-ast/runtime` alias。
+从 `1.0.3` 开始，包新增 `package.json#loader` 字段，Webpack 4 手动 loader 方式可以直接写 `loader: 'api-tracer-ast'`，不需要写 `node_modules/api-tracer-ast/dist/loader.cjs` 绝对路径。
 
 Loader 单独使用时不一定能拿到构建工具完整 `resolve` 配置。如果 `clients[].from` 使用 alias，建议在 loader `options.resolver` 中手动补充。
-
 
 ## 配置参数
 
@@ -138,8 +136,8 @@ Loader 单独使用时不一定能拿到构建工具完整 `resolve` 配置。�
 `clients[].from` 解决的是“变量名相同但来源不同”的误判问题。例如项目里同时存在请求实例和普通工具函数：
 
 ```ts
-import { request } from '@api/request'
-import { request as formatRequest } from '@/utils/request'
+import { request } from "@api/request";
+import { request as formatRequest } from "@/utils/request";
 ```
 
 配置来源后，只有来源命中的客户端会被转换，匹配规则：
@@ -162,21 +160,21 @@ Plugin 方式的 resolver 优先级：
 源码：
 
 ```ts
-import { request } from '@api/request'
+import { request } from "@api/request";
 
 export function reset(params) {
-  return request.post('/api/reset', params)
+  return request.post("/api/reset", params);
 }
 ```
 
 转换后会注入接口函数名：
 
 ```ts
-request.post('/api/reset', params, {
+request.post("/api/reset", params, {
   headers: {
-    'X-Request-Name': 'reset'
-  }
-})
+    "X-Request-Name": "reset",
+  },
+});
 ```
 
 ### 目录子级文件
@@ -184,7 +182,7 @@ request.post('/api/reset', params, {
 如果配置：
 
 ```js
-include: ['api']
+include: ["api"];
 ```
 
 则 `api/aa/b/reset.ts` 会被处理。`include` 使用目录前缀和 glob 匹配，子目录默认包含。
@@ -194,19 +192,19 @@ include: ['api']
 源码：
 
 ```ts
-import axios from 'axios'
+import axios from "axios";
 
-axios.get('/api/list')
+axios.get("/api/list");
 ```
 
 如果该文件命中 `include`，但请求不在具名函数中，则使用默认接口名：
 
 ```ts
-axios.get('/api/list', {
+axios.get("/api/list", {
   headers: {
-    'X-Request-Name': 'none-name'
-  }
-})
+    "X-Request-Name": "none-name",
+  },
+});
 ```
 
 可通过 `defaultRequestName` 改成其他值。
@@ -217,13 +215,12 @@ axios.get('/api/list', {
 
 ```ts
 request({
-  url: '/api/list',
-  method: 'get'
-})
+  url: "/api/list",
+  method: "get",
+});
 ```
 
 转换后会合并 `headers`，并在运行时判断 URL 是否匹配 `urlPrefixes`。
-
 
 ## 构建工具兼容性
 
@@ -236,28 +233,28 @@ request({
 该包会改变构建产物，因此建议只在开发环境启用：
 
 ```js
-const { ApiTracerAstPlugin } = require('api-tracer-ast/plugin')
-const isDev = process.env.NODE_ENV !== 'production'
+const { ApiTracerAstPlugin } = require("api-tracer-ast/plugin");
+const isDev = process.env.NODE_ENV !== "production";
 module.exports = {
   plugins: [
     ...(isDev
       ? [
           new ApiTracerAstPlugin({
-            include: ['src/api', 'src/pages'],
-            exclude: ['**/*.test.ts', '**/*.spec.ts'],
-            urlPrefixes: ['/api'],
-            defaultRequestName: 'none-name',
+            include: ["src/api", "src/pages"],
+            exclude: ["**/*.test.ts", "**/*.spec.ts"],
+            urlPrefixes: ["/api"],
+            defaultRequestName: "none-name",
             clients: [
               {
-                name: 'request',
-                from: ['@api/request', 'src/request']
-              }
-            ]
-          })
+                name: "request",
+                from: ["@api/request", "src/request"],
+              },
+            ],
+          }),
         ]
-      : [])
-  ]
-}
+      : []),
+  ],
+};
 ```
 
 生产环境不启用时，不会注入请求头、不会向插件发送配置、不会输出启动日志。

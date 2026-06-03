@@ -1,89 +1,111 @@
 export interface ApiTracerRuntimeOptions {
-  headerName: string
-  requestName: string
-  urlPrefixes: string[]
+  headerName: string;
+  requestName: string;
+  urlPrefixes: string[];
 }
 
 export interface ApiTracerInitOptions {
-  packageName: string
-  version: string
-  urlPrefixes: string[]
+  packageName: string;
+  version: string;
+  urlPrefixes: string[];
 }
 
-const POST_MESSAGE_SOURCE = 'api-tracer'
-let initialized = false
+const POST_MESSAGE_SOURCE = "api-tracer";
+let initialized = false;
 
 export function __apiTracerInit(options: ApiTracerInitOptions): void {
-  if (initialized) return
-  initialized = true
-  console.log(`[${options.packageName}] 启动成功 ${options.version}`)
-  if (typeof window === 'undefined') return
+  if (initialized) return;
+  initialized = true;
+  console.log(
+    "%c◎%c [%s] 启动成功 v%s",
+    "color:#20b8df;font-size:16px;font-weight:700;text-shadow:0 0 6px rgba(84, 170, 255, 0.45);",
+    "color:inherit;font-size:inherit;font-weight:inherit;text-shadow:none;",
+    options.packageName,
+    options.version,
+  );
+  if (typeof window === "undefined") return;
   try {
     window.postMessage(
       {
         source: POST_MESSAGE_SOURCE,
-        type: 'config',
+        type: "config",
         payload: { apiPrefixes: options.urlPrefixes },
       },
-      '*',
-    )
-  } catch {
-  }
+      "*",
+    );
+  } catch {}
 }
 
-export function __apiTracerInjectConfig<T extends Record<string, unknown> | undefined | null>(
+export function __apiTracerInjectConfig<
+  T extends Record<string, unknown> | undefined | null,
+>(
   config: T,
   url: unknown,
   options: ApiTracerRuntimeOptions,
 ): T | Record<string, unknown> {
-  if (!urlMatchesPrefix(String(url || ''), options.urlPrefixes)) return config || {}
-  const nextConfig: Record<string, unknown> = { ...(config || {}) }
-  nextConfig.headers = injectHeader(nextConfig.headers, options.headerName, options.requestName)
-  return nextConfig
+  if (!urlMatchesPrefix(String(url || ""), options.urlPrefixes))
+    return config || {};
+  const nextConfig: Record<string, unknown> = { ...(config || {}) };
+  nextConfig.headers = injectHeader(
+    nextConfig.headers,
+    options.headerName,
+    options.requestName,
+  );
+  return nextConfig;
 }
 
-export function __apiTracerInjectObjectConfig<T extends Record<string, unknown>>(
+export function __apiTracerInjectObjectConfig<
+  T extends Record<string, unknown>,
+>(
   config: T,
   options: ApiTracerRuntimeOptions,
-  urlKey = 'url',
-  headersKey = 'headers',
+  urlKey = "url",
+  headersKey = "headers",
 ): T {
-  if (!config || typeof config !== 'object') return config
-  const url = config[urlKey]
-  if (!urlMatchesPrefix(String(url || ''), options.urlPrefixes)) return config
+  if (!config || typeof config !== "object") return config;
+  const url = config[urlKey];
+  if (!urlMatchesPrefix(String(url || ""), options.urlPrefixes)) return config;
   return {
     ...config,
-    [headersKey]: injectHeader(config[headersKey], options.headerName, options.requestName),
-  }
+    [headersKey]: injectHeader(
+      config[headersKey],
+      options.headerName,
+      options.requestName,
+    ),
+  };
 }
 
 export function urlMatchesPrefix(url: string, prefixes: string[]): boolean {
-  if (!url || !prefixes || prefixes.length === 0) return false
+  if (!url || !prefixes || prefixes.length === 0) return false;
   for (const raw of prefixes) {
-    if (!raw) continue
-    const prefix = raw.trim()
-    if (!prefix) continue
+    if (!raw) continue;
+    const prefix = raw.trim();
+    if (!prefix) continue;
     if (/^https?:\/\//i.test(prefix)) {
-      if (url.startsWith(prefix)) return true
-      continue
+      if (url.startsWith(prefix)) return true;
+      continue;
     }
-    const pathPrefix = prefix.startsWith('/') ? prefix : `/${prefix}`
+    const pathPrefix = prefix.startsWith("/") ? prefix : `/${prefix}`;
     try {
-      const parsed = new URL(url, 'http://_api_tracer_')
-      if (parsed.pathname.startsWith(pathPrefix)) return true
+      const parsed = new URL(url, "http://_api_tracer_");
+      if (parsed.pathname.startsWith(pathPrefix)) return true;
     } catch {
-      if (url.startsWith(pathPrefix)) return true
+      if (url.startsWith(pathPrefix)) return true;
     }
   }
-  return false
+  return false;
 }
 
-function injectHeader(headers: unknown, headerName: string, requestName: string): Record<string, unknown> {
-  if (headers && typeof headers === 'object') {
+function injectHeader(
+  headers: unknown,
+  headerName: string,
+  requestName: string,
+): Record<string, unknown> {
+  if (headers && typeof headers === "object") {
     return {
       ...(headers as Record<string, unknown>),
       [headerName]: encodeURIComponent(requestName),
-    }
+    };
   }
-  return { [headerName]: encodeURIComponent(requestName) }
+  return { [headerName]: encodeURIComponent(requestName) };
 }
