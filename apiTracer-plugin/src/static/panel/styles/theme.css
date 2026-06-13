@@ -1,80 +1,159 @@
-/* ---------- 主题变量 + 全局 reset ---------- */
+/* ---------- 主题变量 + 全局 reset ----------
+   配色对齐 Chrome DevTools 网络面板：白底、深灰文字、蓝色主色调
+   ---------- */
 
 :root {
-  /* 暖色基底 */
-  --bg: #1a1412;
-  --bg-alt: #221a17;
-  --bg-row-hover: #2c211c;
-  --bg-row-selected: #4a2316;
-  --fg: #ede5df;
-  --fg-dim: #a89992;
-  --border: #3a2a23;
-  --border-strong: #5a3a2e;
+  /* 背景层 */
+  --bg: #ffffff;
+  --bg-alt: #f3f3f3;
+  --bg-row-hover: #e8f0fe;
+  --bg-row-selected: #d2e3fc;
+  --fg: #1f1f1f;
+  --fg-dim: #5f6368;
+  --border: #bcbec2;
+  --border-strong: #bdc1c6;
 
-  /* 红橙主色 */
-  --primary: #ff6b35;
-  --primary-hover: #ff8559;
-  --primary-soft: #4a2418;
-  --primary-dim: #d4501e;
+  /* 蓝色主色（DevTools 蓝） */
+  --primary: #1a73e8;
+  --primary-light: #f4f9ff;
+  --primary-hover: #4589e1;
+  --primary-soft: #e8f0fe;
 
-  /* 状态/方法药丸（始终黑字） */
-  --pill-text: #1a1412;
+  /* 状态/方法药丸 */
+  --pill-2xx: #ceead6;
+  --pill-2xx-fg: #137333;
+  --pill-3xx: #fef08a;
+  --pill-3xx-fg: #7a4800;
+  --pill-4xx: #fad2cf;
+  --pill-4xx-fg: #c5221f;
+  --pill-5xx: #fde4c8;
+  --pill-5xx-fg: #b06000;
+  --pill-default: #e8eaed;
+  --pill-default-fg: #5f6368;
 
-  --pill-2xx: #9ee5a8;
-  --pill-3xx: #f5dd87;
-  --pill-4xx: #f0a4a4;
-  --pill-5xx: #f7b573;
-  --pill-default: #d8d0c8;
+  --pill-get: #ceead6;
+  --pill-get-fg: #137333;
+  --pill-post: #d2e3fc;
+  --pill-post-fg: #1a73e8;
+  --pill-put: #fde4c8;
+  --pill-put-fg: #b06000;
+  --pill-delete: #fad2cf;
+  --pill-delete-fg: #c5221f;
+  --pill-patch: #e8d5f5;
+  --pill-patch-fg: #6a26b5;
+  --pill-other: #e8eaed;
+  --pill-other-fg: #5f6368;
 
-  --pill-get: #a8e0b8;
-  --pill-post: #a8c8e8;
-  --pill-put: #f5c890;
-  --pill-delete: #f0a4a4;
-  --pill-patch: #d8b8e8;
-  --pill-other: #d8d0c8;
+  --pill-biz-ok: #ceead6;
+  --pill-biz-ok-fg: #137333;
+  --pill-biz-fail: #fad2cf;
+  --pill-biz-fail-fg: #c5221f;
 
-  --json-key: #ff8559;
-  --json-string: #98c98c;
-  --json-number: #f5c890;
-  --json-boolean: #d8b8e8;
-  --json-null: #a89992;
+  /* JSON 树配色（对齐 DevTools Preview） */
+  --json-key: #c5221f;
+  --json-string: #137333;
+  --json-number: #1a73e8;
+  --json-boolean: #6a26b5;
+  --json-null: #5f6368;
 
-  --mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
-  --shadow: 0 2px 12px rgba(255, 107, 53, 0.08);
+  /* 字体 */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --mono:
+    ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* 全局字号 */
+  --font-size-base: 11px;
+  --font-size-list: 11px;
+  --font-size-header: 11px;
+  --font-size-pill: 10px;
+  --line-height-base: 1.45;
+
+  /* 列表行高 */
+  --row-height: 20px;
+
+  --shadow: 0 2px 8px rgba(60, 64, 67, 0.15);
+  --backdrop: rgba(32, 33, 36, 0.4);
+  --fg-invert: #fff;
 }
 
-@media (prefers-color-scheme: light) {
+/* DevTools 默认就是浅色，暗色模式单独适配 */
+@media (prefers-color-scheme: dark) {
   :root {
-    --bg: #fffaf6;
-    --bg-alt: #fff2e8;
-    --bg-row-hover: #ffe4d4;
-    --bg-row-selected: #ffd1b5;
-    --fg: #2a1814;
-    --fg-dim: #7a5b4f;
-    --border: #f0d8c4;
-    --border-strong: #e0b890;
+    --bg: #202124;
+    --bg-alt: #292a2d;
+    --bg-row-hover: #3c4043;
+    --bg-row-selected: #394457;
+    --fg: #e8eaed;
+    --fg-dim: #9aa0a6;
+    --border: #3c4043;
+    --border-strong: #5f6368;
 
-    --primary: #d94f1e;
-    --primary-hover: #ff6b35;
-    --primary-soft: #ffe2d2;
-    --primary-dim: #a83a13;
+    --primary: #8ab4f8;
+    --primary-hover: #aecbfa;
+    --primary-soft: #394457;
 
-    --json-key: #d94f1e;
-    --json-string: #2c7a1e;
-    --json-number: #b85f00;
-    --json-boolean: #7a3acc;
-    --json-null: #999;
+    --pill-2xx: #1e3a29;
+    --pill-2xx-fg: #81c995;
+    --pill-3xx: #3d3000;
+    --pill-3xx-fg: #fdd663;
+    --pill-4xx: #3c1f1e;
+    --pill-4xx-fg: #f28b82;
+    --pill-5xx: #3d2600;
+    --pill-5xx-fg: #fcad70;
+    --pill-default: #3c4043;
+    --pill-default-fg: #9aa0a6;
 
-    --shadow: 0 2px 12px rgba(217, 79, 30, 0.08);
+    --pill-get: #1e3a29;
+    --pill-get-fg: #81c995;
+    --pill-post: #1a2e4a;
+    --pill-post-fg: #8ab4f8;
+    --pill-put: #3d2600;
+    --pill-put-fg: #fcad70;
+    --pill-delete: #3c1f1e;
+    --pill-delete-fg: #f28b82;
+    --pill-patch: #2d1f42;
+    --pill-patch-fg: #cf9cf5;
+    --pill-other: #3c4043;
+    --pill-other-fg: #9aa0a6;
+
+    --pill-biz-ok: #1e3a29;
+    --pill-biz-ok-fg: #81c995;
+    --pill-biz-fail: #3c1f1e;
+    --pill-biz-fail-fg: #f28b82;
+
+    --json-key: #f28b82;
+    --json-string: #81c995;
+    --json-number: #8ab4f8;
+    --json-boolean: #cf9cf5;
+    --json-null: #9aa0a6;
+
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --backdrop: rgba(0, 0, 0, 0.5);
+    --fg-invert: #202124;
   }
 }
 
-* { box-sizing: border-box; }
-.hidden { display: none !important; }
-html, body, #app { height: 100%; margin: 0; }
+* {
+  box-sizing: border-box;
+}
+.hidden {
+  display: none !important;
+}
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
 body {
   background: var(--bg);
   color: var(--fg);
-  font: 12px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
 }
-#app { display: flex; flex-direction: column; }
+#app {
+  display: flex;
+  flex-direction: column;
+}

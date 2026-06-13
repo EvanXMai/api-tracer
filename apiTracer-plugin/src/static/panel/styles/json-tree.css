@@ -2,11 +2,17 @@
 
 .json-tree {
   font-family: var(--mono);
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
 }
-.json-node { position: relative; }
-.json-line { white-space: nowrap; display: flex; align-items: flex-start; }
+.json-node {
+  position: relative;
+}
+.json-line {
+  white-space: nowrap;
+  display: flex;
+  align-items: flex-start;
+}
 .json-gutter {
   display: inline-block;
   width: 14px;
@@ -18,18 +24,55 @@
   font-size: 9px;
   line-height: inherit;
 }
-.json-gutter.toggle { cursor: pointer; }
-.json-gutter.toggle::before { content: '▾'; }
-.json-node.collapsed > .json-line > .json-gutter.toggle::before { content: '▸'; }
-.json-node.collapsed > .json-children { display: none; }
-.json-node.collapsed > .json-line > .json-summary { display: inline; }
-.json-node:not(.collapsed) > .json-line > .json-summary { display: none; }
-.json-node:not(.collapsed) > .json-line > .json-close { display: none; }
-.json-children { padding-left: 14px; border-left: 1px dashed var(--border); margin-left: 6px; }
-.json-key { color: var(--json-key); }
-.json-string { color: var(--json-string); word-break: break-all; white-space: pre-wrap; }
-.json-number { color: var(--json-number); }
-.json-boolean { color: var(--json-boolean); }
-.json-null { color: var(--json-null); font-style: italic; }
-.json-punct { color: var(--fg-dim); }
-.json-summary { color: var(--fg-dim); font-style: italic; margin: 0 4px; }
+.json-gutter.toggle {
+  cursor: pointer;
+}
+.json-gutter.toggle::before {
+  content: "▾";
+}
+.json-node.collapsed > .json-line > .json-gutter.toggle::before {
+  content: "▸";
+}
+.json-node.collapsed > .json-children {
+  display: none;
+}
+.json-node.collapsed > .json-line > .json-summary {
+  display: inline;
+}
+.json-node:not(.collapsed) > .json-line > .json-summary {
+  display: none;
+}
+.json-node:not(.collapsed) > .json-line > .json-close {
+  display: none;
+}
+.json-children {
+  padding-left: 14px;
+  border-left: 1px dashed var(--border);
+  margin-left: 6px;
+}
+.json-key {
+  color: var(--json-key);
+}
+.json-string {
+  color: var(--json-string);
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+.json-number {
+  color: var(--json-number);
+}
+.json-boolean {
+  color: var(--json-boolean);
+}
+.json-null {
+  color: var(--json-null);
+  font-style: italic;
+}
+.json-punct {
+  color: var(--fg-dim);
+}
+.json-summary {
+  color: var(--fg-dim);
+  font-style: italic;
+  margin: 0 4px;
+}

@@ -11,7 +11,9 @@
   background: var(--bg-alt);
   overflow: hidden;
 }
-.detail.hidden { display: none; }
+.detail.hidden {
+  display: none;
+}
 
 .detail-head {
   display: flex;
@@ -36,11 +38,14 @@
   font: inherit;
   cursor: pointer;
   border-bottom: 2px solid transparent;
-  transition: all .15s;
+  transition: all 0.15s;
   white-space: nowrap;
   flex: 0 0 auto;
 }
-.detail-tabs .tab:hover { color: var(--fg); background: var(--bg-row-hover); }
+.detail-tabs .tab:hover {
+  color: var(--fg);
+  background: var(--bg-row-hover);
+}
 .detail-tabs .tab.active {
   color: var(--primary);
   border-bottom-color: var(--primary);
@@ -52,8 +57,13 @@
   overflow: auto;
   padding: 0;
 }
-.tab-pane { display: none; padding: 12px; }
-.tab-pane.active { display: block; }
+.tab-pane {
+  display: none;
+  padding: 12px;
+}
+.tab-pane.active {
+  display: block;
+}
 
 /* ---------- 折叠区块（Request/Response/Preview 内部分组） ---------- */
 .section {
@@ -67,35 +77,81 @@
   cursor: pointer;
   padding: 8px 12px;
   background: var(--bg-alt);
-  color: var(--primary);
+  color: var(--fg);
   font-weight: 600;
   list-style: none;
   user-select: none;
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: background .15s;
+  transition: background 0.15s;
 }
-.section > summary::-webkit-details-marker { display: none; }
+/* 复制按钮：所有状态边框透明 */
+.section-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: #383c42;
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition:
+    color 0.15s,
+    background 0.15s;
+  opacity: 0;
+  outline: none;
+}
+.section:hover .section-copy-btn,
+.section[open] .section-copy-btn {
+  opacity: 1;
+}
+.section-copy-btn:hover,
+.section-copy-btn:focus-visible {
+  background: #e8f0fe;
+  color: var(--primary);
+}
+.section-copy-btn.copied {
+  background: transparent;
+  color: var(--primary);
+}
+.section > summary::-webkit-details-marker {
+  display: none;
+}
 .section > summary::before {
-  content: '▸';
+  content: "▸";
   display: inline-block;
-  transition: transform .15s;
+  transition: transform 0.15s;
   color: var(--fg-dim);
   font-size: 10px;
 }
-.section[open] > summary::before { transform: rotate(90deg); }
-.section > summary:hover { background: var(--bg-row-hover); }
+.section[open] > summary::before {
+  transform: rotate(90deg);
+}
+.section > summary:hover {
+  background: var(--bg-row-hover);
+}
 .section > .section-body {
-  padding: 10px 12px;
+  padding: 8px 12px;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: var(--font-size-base);
+}
+/* section-right：推到最右，内部 数字+复制按钮 紧靠排列 */
+.section-right {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
 }
 .section-meta {
-  margin-left: auto;
   color: var(--fg-dim);
   font-weight: 400;
-  font-size: 11px;
+  font-size: var(--font-size-base);
   font-family: var(--mono);
 }
 
@@ -108,15 +164,15 @@
   gap: 4px 12px;
 }
 .kv .k {
-  color: var(--primary);
+  color: var(--fg);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--font-size-base);
   word-break: break-all;
 }
 .kv .v {
   color: var(--fg);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--font-size-base);
   word-break: break-all;
   white-space: pre-wrap;
   /* 关键：grid 子项默认 min-width:auto，长 URL 会撑爆右边界，必须显式置 0 */
@@ -129,9 +185,12 @@
   margin: 0;
   padding: 0;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: var(--font-size-base);
   white-space: pre-wrap;
   word-break: break-all;
   color: var(--fg);
 }
-.codeblock.empty { color: var(--fg-dim); font-style: italic; }
+.codeblock.empty {
+  color: var(--fg-dim);
+  font-style: italic;
+}
