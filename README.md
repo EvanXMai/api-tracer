@@ -37,7 +37,7 @@ ApiTracer 的核心能力：
 <table>
   <tr>
     <td><img src="./assets/home.png" alt="ApiTracer 首页" /></td>
-    <td><img src="./assets/filter.png" alt="ApiTracer 筛选" /></td>
+    <td><img src="./assets/json.png" alt="ApiTracer 筛选" /></td>
   </tr>
   <tr>
     <td><img src="./assets/preview.png" alt="ApiTracer 预览" /></td>
