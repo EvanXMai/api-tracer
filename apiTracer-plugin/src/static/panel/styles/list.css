@@ -73,7 +73,7 @@
   padding: 4px 8px;
   border-bottom: 1px solid var(--border-strong);
   border-right: 1px solid var(--border);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--fg-dim);
   font-size: var(--font-size-header);
   text-transform: uppercase;
@@ -293,7 +293,7 @@
   border-radius: 10px;
   font-family: var(--mono);
   font-size: var(--font-size-pill);
-  font-weight: 600;
+  font-weight: 550;
   letter-spacing: 0.3px;
   line-height: 16px;
   min-width: min(38px, 100%);
