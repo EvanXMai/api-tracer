@@ -16,9 +16,28 @@ import { relayoutForDetailHidden, relayoutForDetailVisible } from "./splitter";
 function getSectionText(sectionEl: HTMLDetailsElement): string {
   const body = sectionEl.querySelector(".section-body");
   if (!body) return "";
-  // codeblock / pre → textContent 即原始文本
-  const pre = body.querySelector("pre.codeblock");
-  if (pre) return pre.textContent ?? "";
+  // json-tree（含 flat 模式）→ 按行拼接
+  const tree = body.querySelector(".json-tree");
+  if (tree) {
+    const lines = tree.querySelectorAll(".json-line");
+    if (lines.length > 0) {
+      return Array.from(lines)
+        .map((l) => l.textContent ?? "")
+        .join("\n");
+    }
+    return tree.textContent ?? "";
+  }
+  // codeblock → 优先按每行子元素拼接，保持原始换行；兼容旧 <pre>
+  const code = body.querySelector(".codeblock");
+  if (code) {
+    const lines = code.querySelectorAll(".codeline");
+    if (lines.length > 0) {
+      return Array.from(lines)
+        .map((l) => l.textContent ?? "")
+        .join("\n");
+    }
+    return code.textContent ?? "";
+  }
   // kv 网格 → 拼成 key: value 行
   const keys = Array.from(body.querySelectorAll(".k"));
   const vals = Array.from(body.querySelectorAll(".v"));

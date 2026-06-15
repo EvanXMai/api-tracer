@@ -9,20 +9,25 @@
   position: relative;
 }
 .json-line {
-  white-space: nowrap;
-  display: flex;
-  align-items: flex-start;
+  /* 行内容 inline 排版，避免复制时被拆成多行；
+     长 value 换行时续行回到当前行的左边（.json-children 的层级缩进列）。 */
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 .json-gutter {
   display: inline-block;
   width: 14px;
-  flex: 0 0 14px;
-  text-align: center;
+  /* 右对齐：三角符号紧贴 gutter 右边界 → 紧挨 key 左侧显示 */
+  text-align: right;
+  padding-right: 1px;
   color: var(--fg-dim);
   cursor: default;
   user-select: none;
   font-size: 9px;
   line-height: inherit;
+  vertical-align: top;
 }
 .json-gutter.toggle {
   cursor: pointer;
@@ -46,9 +51,22 @@
   display: none;
 }
 .json-children {
-  padding-left: 14px;
+  padding-left: 8px;
   border-left: 1px dashed var(--border);
   margin-left: 6px;
+}
+/* flat 模式：纯代码高亮——去掉层级虚线 / 折叠箭头 */
+.json-tree.flat .json-children {
+  border-left: none;
+  margin-left: 0;
+  padding-left: 14px;
+}
+.json-tree.flat .json-gutter {
+  display: none;
+}
+.json-tree.flat .json-summary,
+.json-tree.flat .json-close {
+  display: none;
 }
 .json-key {
   color: var(--json-key);
@@ -60,12 +78,18 @@
 }
 .json-number {
   color: var(--json-number);
+  word-break: break-all;
+  white-space: pre-wrap;
 }
 .json-boolean {
   color: var(--json-boolean);
 }
 .json-null {
   color: var(--json-null);
+  font-style: italic;
+}
+.json-undefined {
+  color: var(--json-undefined);
   font-style: italic;
 }
 .json-punct {

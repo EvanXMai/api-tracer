@@ -30,12 +30,6 @@ export function formatSize(bytes: number): string {
   return (bytes / 1024 / 1024).toFixed(2) + " MB";
 }
 
-export function formatHeaders(h: Record<string, string>): string {
-  return Object.entries(h)
-    .map(([k, v]) => `${k}: ${v}`)
-    .join("\n");
-}
-
 export function tryFormatJson(s: string): string {
   if (!s) return "";
   try {
@@ -112,10 +106,14 @@ export function section(title: string, meta: number, inner: string): string {
   `;
 }
 
-export function kv(rows: [string, string][]): string {
+export function kv(
+  rows: [string, string][],
+  variant: "" | "wide" = "",
+): string {
   if (rows.length === 0) return '<div class="codeblock empty">(空)</div>';
+  const cls = variant === "wide" ? "kv kv-wide" : "kv";
   return (
-    '<div class="kv">' +
+    `<div class="${cls}">` +
     rows
       .map(
         ([k, v]) =>
@@ -128,5 +126,11 @@ export function kv(rows: [string, string][]): string {
 
 export function codeblock(text: string): string {
   if (!text) return '<div class="codeblock empty">(空)</div>';
-  return `<pre class="codeblock">${escapeHtml(text)}</pre>`;
+  // 每行一个子元素，便于在父容器中通过 gap 给行间设置间距；
+  // 同时保留多行字符串原貌——单行内部仍可由 CSS 进行软换行。
+  const lines = text.split("\n");
+  const inner = lines
+    .map((line) => `<div class="codeline">${escapeHtml(line)}</div>`)
+    .join("");
+  return `<div class="codeblock">${inner}</div>`;
 }

@@ -33,7 +33,7 @@
 
 /* ---------- 分隔条（拖拽改变详情区宽度） ---------- */
 .splitter {
-  flex: 0 0 5px;
+  flex: 0 0 2px;
   background: var(--border);
   cursor: col-resize;
   position: relative;

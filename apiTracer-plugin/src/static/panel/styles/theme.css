@@ -55,6 +55,7 @@
   --json-number: #1a73e8;
   --json-boolean: #6a26b5;
   --json-null: #5f6368;
+  --json-undefined: #5f6368;
 
   /* 字体 */
   --font-sans:
@@ -127,6 +128,7 @@
     --json-number: #8ab4f8;
     --json-boolean: #cf9cf5;
     --json-null: #9aa0a6;
+    --json-undefined: #9aa0a6;
 
     --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     --backdrop: rgba(0, 0, 0, 0.5);

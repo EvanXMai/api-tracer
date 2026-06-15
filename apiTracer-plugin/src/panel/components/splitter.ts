@@ -14,8 +14,8 @@
 
 // detail 与 list 各自最小占比（避免完全收缩为 0 看不见）
 const MIN_RATIO = 0.15;
-// 默认 detail 占比；打开详情时左右面板 = 1 : 2
-const DEFAULT_DETAIL_RATIO = 2 / 3;
+// 默认 detail 占比；打开详情时左右面板 = 1 : 3（detail : list = 3 : 1）
+const DEFAULT_DETAIL_RATIO = 3 / 4;
 
 // 用模块级变量记录最近一次 detail 占比，用于隐藏 → 再次显示时恢复
 let lastDetailRatio = DEFAULT_DETAIL_RATIO;
